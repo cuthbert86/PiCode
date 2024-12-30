@@ -1,0 +1,128 @@
+This is just a bit of work in progress right now, the goal is to send data from my raspberry pi pico to a cloud based azure iot hub.  
+
+Yes, it is possible to send data from a Raspberry Pi Pico to a cloud-based Azure IoT Hub. To achieve this, you'll need to follow several steps to set up your hardware, configure your Azure IoT Hub, and write the necessary code to send data.
+
+Below are the detailed steps:
+
+### Step 1: Prepare Your Hardware
+1. **Raspberry Pi Pico** with Wi-Fi capability (e.g., Raspberry Pi Pico W).
+2. **MicroPython Firmware**: Ensure your Pico is flashed with the latest MicroPython firmware.
+
+### Step 2: Set Up Azure IoT Hub
+1. **Create an IoT Hub** in the Azure portal:
+   - Go to the Azure portal.
+   - Create a new IoT Hub.
+
+2. **Register a New Device**:
+   - In your IoT Hub, navigate to `IoT devices` under `Explorers`.
+   - Add a new device and note down the device connection string. This string will be used in your code to authenticate the device when sending data.
+
+### Step 3: Install Required Libraries
+1. **Install `umqtt.simple` Library**:
+   - You need the `umqtt.simple` library for MQTT communication. This can be done by downloading the library and uploading it to your Pico using a tool like Thonny IDE.
+
+### Step 4: Connect to Wi-Fi
+Ensure your Pico is connected to the internet.
+
+```python
+import network
+import time
+
+def connect_wifi(ssid, password):
+    wlan = network.WLAN(network.STA_IF)
+    wlan.active(True)
+    wlan.connect(ssid, password)
+    while not wlan.isconnected():
+        time.sleep(1)
+    print('Wi-Fi connected:', wlan.ifconfig())
+
+# Replace 'your-ssid' and 'your-password' with your Wi-Fi details
+connect_wifi('your-ssid', 'your-password')
+```
+
+### Step 5: Send Data to Azure IoT Hub
+
+```python
+from umqtt.simple import MQTTClient
+import time
+import json
+import ubinascii
+import machine
+
+# Azure IoT Hub Configuration
+IOT_HUB_NAME = "YOUR_IOT_HUB_NAME"
+DEVICE_ID = "YOUR_DEVICE_ID"
+DEVICE_KEY = "YOUR_DEVICE_KEY"
+IOT_HUB_HOSTNAME = IOT_HUB_NAME + ".azure-devices.net"
+
+# Create the MQTT client ID and username
+CLIENT_ID = DEVICE_ID
+USERNAME = IOT_HUB_HOSTNAME + "/" + DEVICE_ID + "/api-version=2018-06-30"
+
+# Create the MQTT topic
+TOPIC = "devices/{}/messages/events/".format(DEVICE_ID)
+
+# Function to create the SAS token
+def create_sas_token(uri, key, expiry=3600):
+    import hmac
+    import hashlib
+    import time
+    import base64
+
+    ttl = int(time.time()) + expiry
+    sign_key = "%s\n%d" % (uri, ttl)
+    signature = hmac.new(base64.b64decode(key), sign_key.encode('utf-8'), hashlib.sha256).digest()
+    signature = base64.b64encode(signature)
+    rawtoken = {
+        'sr': uri,
+        'sig': signature,
+        'se': str(ttl)
+    }
+    return 'SharedAccessSignature ' + '&'.join(['%s=%s' % (k, urllib.parse.quote_plus(v)) for k,v in rawtoken.items()])
+
+# Create the SAS token
+sas_token = create_sas_token(IOT_HUB_HOSTNAME + "/devices/" + DEVICE_ID, DEVICE_KEY)
+
+# Connect to the MQTT broker
+client = MQTTClient(
+    CLIENT_ID,
+    IOT_HUB_HOSTNAME,
+    user=USERNAME,
+    password=sas_token,
+    ssl=True
+)
+
+def connect_mqtt():
+    client.connect()
+    print("Connected to Azure IoT Hub")
+    return client
+
+def send_mqtt_message(client, topic, message):
+    client.publish(topic, message)
+    print(f"Message sent to topic {topic}: {message}")
+
+# Connect to MQTT Broker
+mqtt_client = connect_mqtt()
+
+# Send a message
+payload = json.dumps({"temperature": 22.5, "humidity": 60})
+send_mqtt_message(mqtt_client, TOPIC, payload)
+
+# Disconnect from MQTT Broker
+mqtt_client.disconnect()
+```
+
+### Explanation
+
+1. **Wi-Fi Connection**: Connects the Raspberry Pi Pico to your Wi-Fi network.
+2. **Azure IoT Hub Configuration**: Sets up the necessary configuration details for your Azure IoT Hub, including the IoT Hub name, device ID, and device key.
+3. **SAS Token**: Generates a Shared Access Signature (SAS) token for authenticating the device with Azure IoT Hub.
+4. **MQTT Client Setup**: Initializes and connects the MQTT client to the Azure IoT Hub using the generated SAS token.
+5. **Sending Data**: Publishes a JSON payload to the IoT Hub.
+
+### Additional Tips
+- **Error Handling**: Add error handling to manage exceptions like network issues or authentication failures.
+- **Keep-Alive**: Configure the keep-alive interval to maintain a persistent connection with the IoT Hub.
+- **Security**: Ensure your credentials and keys are kept secure.
+
+With this setup, you should be able to send data from your Raspberry Pi Pico to Azure IoT Hub successfully.
