@@ -84,7 +84,8 @@ def connect_to_wifi():
     else:
         print("Wi-Fi connected!")
         print("IP address:", wlan.ifconfig())
-        
+
+
 def to_json(temperature):
 
     # Create a dictionary to hold the sensor data
