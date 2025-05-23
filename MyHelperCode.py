@@ -13,8 +13,8 @@ import json
 
 
 Self_Name = 'PW_1'
-SSID = 'BB'
-PASSWORD = '6KH1jk1mn0s'
+SSID = '******'
+PASSWORD = '*****'
 ssidRouter     = '*****'    #Enter the router name
 passwordRouter = '*****' #Enter the router password
 ssidAP         = 'Pico W'      #Enter the AP name
