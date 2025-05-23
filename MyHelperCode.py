@@ -15,8 +15,8 @@ import json
 Self_Name = 'PW_1'
 SSID = 'BB'
 PASSWORD = '6KH1jk1mn0s'
-ssidRouter     = 'BB'    #Enter the router name
-passwordRouter = '6KH1jk1mn0s' #Enter the router password
+ssidRouter     = '*****'    #Enter the router name
+passwordRouter = '*****' #Enter the router password
 ssidAP         = 'Pico W'      #Enter the AP name
 passwordAP     = '12345678'    #Enter the AP password
 local_IP       = '192.168.4.150'
