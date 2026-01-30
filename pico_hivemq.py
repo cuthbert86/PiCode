@@ -8,8 +8,8 @@ from machine import Pin
 import micropython
 import ustruct as struct
 
-SSID = 'BB'
-PASSWORD = b'6KH1jk1mn0s'
+SSID = ''
+PASSWORD = b''
 adcpin = 4
 sensor = machine.ADC(adcpin)
 wlan = network.WLAN(network.STA_IF)
