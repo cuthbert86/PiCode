@@ -73,8 +73,8 @@ def GetTemperature():
 
 
 def connect_to_wifi():
-    SSID = 'BB'
-    PASSWORD = '6KH1jk1mn0s'
+    SSID = ''
+    PASSWORD = ''
     wlan.active(True)
     wlan.connect(SSID, PASSWORD)
     print("Connecting to Wi-Fi...")
