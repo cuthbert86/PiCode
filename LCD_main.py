@@ -43,8 +43,8 @@ ap_if = network.WLAN(network.AP_IF)
 adcpin = 4
 sensor = machine.ADC(adcpin)
 sock = usocket
-SSID = 'BB'
-PASSWORD = '6KH1jk1mn0s'
+SSID = ''
+PASSWORD = ''
 
 i2c = I2C(1, sda=Pin(14), scl=Pin(15), freq=400000)
 devices = i2c.scan()
