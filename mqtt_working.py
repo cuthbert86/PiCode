@@ -11,8 +11,8 @@ import ustruct as struct
 adcpin = 4
 sensor = machine.ADC(adcpin)
 sock = usocket
-SSID = 'BB'
-PASSWORD = b'6KH1jk1mn0s'
+SSID = ''
+PASSWORD = ''
 broker_address = b'e5d2174059b64286bd5f243dd055355a.s1.eu.hivemq.cloud'
 mqtt_username = b"CB_1986"
 mqtt_password = b'Cbaines123!'
@@ -26,8 +26,8 @@ sock = socket.socket()
 
 
 def connect_to_wifi():
-    SSID = 'BB'
-    PASSWORD = b'6KH1jk1mn0s'
+    SSID = ''
+    PASSWORD = ''
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     wlan.connect(SSID, PASSWORD)
