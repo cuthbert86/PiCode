@@ -1,5 +1,5 @@
-wifi_ssid = 'BB'
-wifi_password = '6KH1jk1mn0s'
+wifi_ssid = ''
+wifi_password = ''
 mqtt_server = b'e5d2174059b64286bd5f243dd055355a.s1.eu.hivemq.cloud'
 mqtt_username = b"Cuthbert"
 mqtt_password = b'Cbaines123!'
